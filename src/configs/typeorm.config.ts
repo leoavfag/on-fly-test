@@ -1,6 +1,4 @@
-
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm'
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: 'postgres',
@@ -11,15 +9,4 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   database: 'onfly',
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   synchronize: true,
-};
-
-export const dataSource = new DataSource({
-  type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'pguser',
-  password: 'pgpassword',
-  database: 'onfly',
-  entities: [__dirname + '/../**/*.entity.{js,ts}'],
-  synchronize: true,
-});
+}
