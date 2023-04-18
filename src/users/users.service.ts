@@ -47,15 +47,9 @@ export class UsersService {
     }
   }
 
-  async checkCredentials(credentialsDto: CredentialsDto): Promise<User> {
-    const { email, password } = credentialsDto
-    const user = await this.userRepository.findOne({ where: { email } })
-
-    if (user && (await user.checkPassword(password))) {
-      return user
-    } else {
-      return null
-    }
+  async findUser(credentialsDto: CredentialsDto): Promise<User | undefined> {
+    const { email } = credentialsDto
+    return await this.userRepository.findOne({ where: { email } })
   }
 
   private async hashPassword(password: string, salt: string): Promise<string> {

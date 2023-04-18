@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  UnauthorizedException,
-  UnprocessableEntityException,
-} from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CreateUserDto } from 'src/users/dtos/create-user.dto'
 import { User } from 'src/users/users.entity'
@@ -13,8 +9,7 @@ import { JwtService } from '@nestjs/jwt'
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private readonly userService: UsersService,
+    private userService: UsersService,
     private jwtService: JwtService,
   ) {}
 
@@ -22,18 +17,20 @@ export class AuthService {
     return await this.userService.createUser(createUserDto)
   }
 
-  async signIn(credentialsDto: CredentialsDto) {
-    const user = await this.userService.checkCredentials(credentialsDto)
+  async signIn(credentialsDto: CredentialsDto): Promise<any> {
+    const { password } = credentialsDto
+    const user = await this.userService.findUser(credentialsDto)
 
-    if (user === null) {
-      throw new UnauthorizedException('Credenciais inválidas')
+    if (user && (await user.checkPassword(password))) {
+      const jwtPayload = {
+        email: user.email,
+        sub: user.id,
+      }
+
+      const token = await this.jwtService.signAsync(jwtPayload)
+
+      return { token }
     }
-
-    const jwtPayload = {
-      id: user.id,
-    }
-    const token = await this.jwtService.sign(jwtPayload)
-
-    return { token }
+    throw new UnauthorizedException('Credenciais inválidas')
   }
 }
