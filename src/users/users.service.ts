@@ -10,6 +10,7 @@ import * as bcrypt from 'bcryptjs'
 
 import { User } from './users.entity'
 import { CreateUserDto } from './dtos/create-user.dto'
+import { CredentialsDto } from 'src/auth/dtos/credentials.dto'
 
 @Injectable()
 export class UsersService {
@@ -43,6 +44,17 @@ export class UsersService {
           )
         }
       }
+    }
+  }
+
+  async checkCredentials(credentialsDto: CredentialsDto): Promise<User> {
+    const { email, password } = credentialsDto
+    const user = await this.userRepository.findOne({ where: { email } })
+
+    if (user && (await user.checkPassword(password))) {
+      return user
+    } else {
+      return null
     }
   }
 
