@@ -6,13 +6,14 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
-  Request,
+  Req,
   Get,
 } from '@nestjs/common'
-import { AuthService } from './auth.service'
 import { CreateUserDto } from 'src/users/dtos/create-user.dto'
 import { CredentialsDto } from './dtos/credentials.dto'
-import { AuthGuard } from './auth.guard'
+import { AuthService } from './auth.service'
+import { AuthGuard } from '@nestjs/passport'
+import { User } from 'src/users/users.entity'
 
 @Controller('auth')
 export class AuthController {
@@ -36,9 +37,9 @@ export class AuthController {
     return await this.authService.signIn(credentiaslsDto)
   }
 
-  @UseGuards(AuthGuard)
-  @Get('/me')
-  getProfile(@Request() req) {
+  @UseGuards(AuthGuard())
+  @Get('/profile')
+  getProfile(@Req() req): User {
     return req.user
   }
 }
