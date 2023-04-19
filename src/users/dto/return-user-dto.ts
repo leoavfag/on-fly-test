@@ -1,4 +1,4 @@
-import { User } from '../users.entity'
+import { User } from '../entities/users.entity'
 
 export class ReturnUserDto {
   user: User

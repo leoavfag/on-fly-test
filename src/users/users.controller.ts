@@ -12,11 +12,11 @@ import {
 } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { AuthGuard } from '@nestjs/passport'
-import { ReturnUserDto } from './dtos/return-user-dto'
-import { UpdateUserDto } from './dtos/update-users.dto'
-import { User } from './users.entity'
+import { ReturnUserDto } from './dto/return-user-dto'
+import { UpdateUserDto } from './dto/update-users.dto'
+import { User } from './entities/users.entity'
 import { GetUser } from 'src/auth/get-user.decorator'
-import { FindUsersQueryDto } from './dtos/find-users-query.dto'
+import { FindUsersQueryDto } from './dto/find-users-query.dto'
 
 @Controller('users')
 @UseGuards(AuthGuard())

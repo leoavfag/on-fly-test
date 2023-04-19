@@ -9,11 +9,11 @@ import {
   Req,
   Get,
 } from '@nestjs/common'
-import { CreateUserDto } from 'src/users/dtos/create-user.dto'
+import { CreateUserDto } from 'src/users/dto/create-user.dto'
 import { CredentialsDto } from './dtos/credentials.dto'
 import { AuthService } from './auth.service'
 import { AuthGuard } from '@nestjs/passport'
-import { User } from 'src/users/users.entity'
+import { User } from 'src/users/entities/users.entity'
 import { GetUser } from './get-user.decorator'
 
 @Controller('auth')

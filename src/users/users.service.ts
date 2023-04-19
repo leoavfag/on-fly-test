@@ -9,11 +9,11 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import * as bcrypt from 'bcryptjs'
 
-import { User } from './users.entity'
-import { CreateUserDto } from './dtos/create-user.dto'
+import { User } from './entities/users.entity'
+import { CreateUserDto } from './dto/create-user.dto'
 import { CredentialsDto } from 'src/auth/dtos/credentials.dto'
-import { UpdateUserDto } from './dtos/update-users.dto'
-import { FindUsersQueryDto } from './dtos/find-users-query.dto'
+import { UpdateUserDto } from './dto/update-users.dto'
+import { FindUsersQueryDto } from './dto/find-users-query.dto'
 
 @Injectable()
 export class UsersService {
