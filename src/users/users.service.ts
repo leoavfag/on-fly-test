@@ -25,8 +25,9 @@ export class UsersService {
   async findUsers(
     queryDto: FindUsersQueryDto,
   ): Promise<{ users: User[]; total: number }> {
-    queryDto.page = queryDto.page < 1 ? 1 : queryDto.page
-    queryDto.limit = queryDto.limit > 100 ? 100 : queryDto.limit
+    queryDto.page = queryDto.page < 1 || !queryDto.page ? 1 : queryDto.page
+    queryDto.limit =
+      queryDto.limit > 100 || !queryDto.limit ? 100 : queryDto.limit
 
     const { name, email } = queryDto
     const query = this.userRepository.createQueryBuilder('user')
@@ -35,10 +36,12 @@ export class UsersService {
     if (email)
       query.andWhere('user.email ILIKE :email', { email: `%${email}%` })
 
-    query.skip((queryDto.page - 1) * queryDto.limit).take(queryDto.limit)
+    console.log(queryDto.page)
+
+    query.skip((queryDto.page - 1) * queryDto.limit)
     query.take(+queryDto.limit)
     query.orderBy(queryDto.sort ? JSON.parse(queryDto.sort) : undefined)
-    query.select(['user.name', 'user.email'])
+    query.select(['user.name', 'user.email', 'user.id'])
     const [users, total] = await query.getManyAndCount()
 
     return { users, total }
@@ -49,26 +52,24 @@ export class UsersService {
 
     if (password != passwordConfirmation) {
       throw new UnprocessableEntityException('As senhas não conferem')
-    } else {
-      const user = new User()
-      user.email = email
-      user.name = name
-      user.salt = await bcrypt.genSalt()
-      user.password = await this.hashPassword(password, user.salt)
-      try {
-        await this.userRepository.save(user)
-        delete user.password
-        delete user.salt
-        return user
-      } catch (error) {
-        if (error.code.toString() === '23505') {
-          throw new ConflictException('Endereço de email já está em uso')
-        } else {
-          throw new InternalServerErrorException(
-            'Erro ao salvar o usuário no banco de dados',
-          )
-        }
+    }
+    const user = new User()
+    user.email = email
+    user.name = name
+    user.salt = await bcrypt.genSalt()
+    user.password = await this.hashPassword(password, user.salt)
+    try {
+      await this.userRepository.save(user)
+      delete user.password
+      delete user.salt
+      return user
+    } catch (error) {
+      if (error.code.toString() === '23505') {
+        throw new ConflictException('Endereço de email já está em uso')
       }
+      throw new InternalServerErrorException(
+        'Erro ao salvar o usuário no banco de dados',
+      )
     }
   }
 
