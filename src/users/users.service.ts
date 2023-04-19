@@ -36,8 +36,6 @@ export class UsersService {
     if (email)
       query.andWhere('user.email ILIKE :email', { email: `%${email}%` })
 
-    console.log(queryDto.page)
-
     query.skip((queryDto.page - 1) * queryDto.limit)
     query.take(+queryDto.limit)
     query.orderBy(queryDto.sort ? JSON.parse(queryDto.sort) : undefined)
