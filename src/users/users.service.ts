@@ -3,6 +3,7 @@ import {
   ConflictException,
   InternalServerErrorException,
   UnprocessableEntityException,
+  NotFoundException,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
@@ -11,6 +12,7 @@ import * as bcrypt from 'bcryptjs'
 import { User } from './users.entity'
 import { CreateUserDto } from './dtos/create-user.dto'
 import { CredentialsDto } from 'src/auth/dtos/credentials.dto'
+import { UpdateUserDto } from './dtos/update-users.dto'
 
 @Injectable()
 export class UsersService {
@@ -45,6 +47,38 @@ export class UsersService {
         }
       }
     }
+  }
+
+  async findUserById(userId: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['email', 'name', 'id'],
+    })
+
+    if (!user) throw new NotFoundException('Usuário não encontrado')
+
+    return user
+  }
+
+  async updateUser(updateUserDto: UpdateUserDto, id: string): Promise<User> {
+    const user = await this.findUserById(id)
+    const { name, email } = updateUserDto
+    user.name = name ? name : user.name
+    user.email = email ? email : user.email
+    try {
+      await user.save()
+      return user
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Erro ao salvar os dados no banco de dados',
+      )
+    }
+  }
+
+  async deleteUser(userId: string): Promise<void> {
+    const result = await this.userRepository.delete({ id: userId })
+    if (result.affected === 0)
+      throw new NotFoundException('Usuário não encontrado')
   }
 
   async findUser(credentialsDto: CredentialsDto): Promise<User | undefined> {
