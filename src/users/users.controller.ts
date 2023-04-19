@@ -15,11 +15,11 @@ import { AuthGuard } from '@nestjs/passport'
 import { ReturnUserDto } from './dto/return-user-dto'
 import { UpdateUserDto } from './dto/update-users.dto'
 import { User } from './entities/users.entity'
-import { GetUser } from 'src/auth/get-user.decorator'
+import { GetUser } from '../auth/get-user.decorator'
 import { FindUsersQueryDto } from './dto/find-users-query.dto'
 
 @Controller('users')
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard('jwt'))
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -38,18 +38,17 @@ export class UsersController {
     @GetUser() user: User,
     @Param('id') id: string,
   ) {
-    if (user.id.toString() != id) {
+    if (user.id !== id) {
       throw new ForbiddenException(
         'Você não tem autorização para acessar esse recurso',
       )
-    } else {
-      return this.usersService.updateUser(updateUserDto, id)
     }
+    return this.usersService.updateUser(updateUserDto, id)
   }
 
   @Delete(':id')
   async deleteUser(@Param('id') id: string, @GetUser() user: User) {
-    if (user.id.toString() != id) {
+    if (user.id !== id) {
       throw new ForbiddenException(
         'Você não tem autorização para acessar esse recurso',
       )

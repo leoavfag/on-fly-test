@@ -9,6 +9,7 @@ import {
 } from 'typeorm'
 
 import * as bcrypt from 'bcryptjs'
+import { Exclude } from 'class-transformer'
 
 @Entity()
 @Unique(['email'])
@@ -22,6 +23,7 @@ export class User extends BaseEntity {
   @Column({ nullable: false, type: 'varchar', length: 200 })
   name: string
 
+  @Exclude()
   @Column({ nullable: false, type: 'varchar' })
   password: string
 

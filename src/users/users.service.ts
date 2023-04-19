@@ -48,9 +48,10 @@ export class UsersService {
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { email, name, password, passwordConfirmation } = createUserDto
 
-    if (password != passwordConfirmation) {
+    if (password !== passwordConfirmation) {
       throw new UnprocessableEntityException('As senhas não conferem')
     }
+
     const user = new User()
     user.email = email
     user.name = name
@@ -83,18 +84,13 @@ export class UsersService {
   }
 
   async updateUser(updateUserDto: UpdateUserDto, id: string): Promise<User> {
-    const user = await this.findUserById(id)
-    const { name, email } = updateUserDto
-    user.name = name ? name : user.name
-    user.email = email ? email : user.email
-    try {
-      await user.save()
+    const result = await this.userRepository.update({ id }, updateUserDto)
+
+    if (result.affected > 0) {
+      const user = await this.findUserById(id)
       return user
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'Erro ao salvar os dados no banco de dados',
-      )
     }
+    throw new NotFoundException('Usuário não encontrado')
   }
 
   async deleteUser(userId: string): Promise<void> {
