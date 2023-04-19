@@ -13,6 +13,7 @@ import { User } from './users.entity'
 import { CreateUserDto } from './dtos/create-user.dto'
 import { CredentialsDto } from 'src/auth/dtos/credentials.dto'
 import { UpdateUserDto } from './dtos/update-users.dto'
+import { FindUsersQueryDto } from './dtos/find-users-query.dto'
 
 @Injectable()
 export class UsersService {
@@ -20,6 +21,28 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+
+  async findUsers(
+    queryDto: FindUsersQueryDto,
+  ): Promise<{ users: User[]; total: number }> {
+    queryDto.page = queryDto.page < 1 ? 1 : queryDto.page
+    queryDto.limit = queryDto.limit > 100 ? 100 : queryDto.limit
+
+    const { name, email } = queryDto
+    const query = this.userRepository.createQueryBuilder('user')
+
+    if (name) query.andWhere('user.name ILIKE :name', { name: `%${name}%` })
+    if (email)
+      query.andWhere('user.email ILIKE :email', { email: `%${email}%` })
+
+    query.skip((queryDto.page - 1) * queryDto.limit).take(queryDto.limit)
+    query.take(+queryDto.limit)
+    query.orderBy(queryDto.sort ? JSON.parse(queryDto.sort) : undefined)
+    query.select(['user.name', 'user.email'])
+    const [users, total] = await query.getManyAndCount()
+
+    return { users, total }
+  }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { email, name, password, passwordConfirmation } = createUserDto

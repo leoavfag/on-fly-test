@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Patch,
+  Query,
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common'
@@ -15,6 +16,7 @@ import { ReturnUserDto } from './dtos/return-user-dto'
 import { UpdateUserDto } from './dtos/update-users.dto'
 import { User } from './users.entity'
 import { GetUser } from 'src/auth/get-user.decorator'
+import { FindUsersQueryDto } from './dtos/find-users-query.dto'
 
 @Controller('users')
 @UseGuards(AuthGuard())
@@ -55,6 +57,15 @@ export class UsersController {
     await this.usersService.deleteUser(id)
     return {
       message: 'Usuário deletado com sucesso',
+    }
+  }
+
+  @Get()
+  async findUsers(@Query() queryDto: FindUsersQueryDto) {
+    const users = await this.usersService.findUsers(queryDto)
+    return {
+      users,
+      message: 'Usuários encontrados',
     }
   }
 }
