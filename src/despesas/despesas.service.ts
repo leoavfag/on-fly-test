@@ -43,7 +43,6 @@ export class DespesasService {
       await this.despesaRepository.save(despesa)
       return despesa
     } catch (error) {
-      console.log(error)
       throw new InternalServerErrorException(
         'Erro ao salvar o despesa no banco de dados',
       )
