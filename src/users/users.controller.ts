@@ -9,14 +9,14 @@ import {
   Query,
   UseGuards,
   ValidationPipe,
-} from '@nestjs/common'
-import { UsersService } from './users.service'
-import { AuthGuard } from '@nestjs/passport'
-import { ReturnUserDto } from './dto/return-user-dto'
-import { UpdateUserDto } from './dto/update-users.dto'
-import { User } from './entities/users.entity'
-import { GetUser } from '../auth/get-user.decorator'
-import { FindUsersQueryDto } from './dto/find-users-query.dto'
+} from '@nestjs/common';
+import { UsersService } from './users.service';
+import { AuthGuard } from '@nestjs/passport';
+import { ReturnUserDto } from './dto/return-user-dto';
+import { UpdateUserDto } from './dto/update-users.dto';
+import { User } from './entities/users.entity';
+import { GetUser } from '../auth/get-user.decorator';
+import { FindUsersQueryDto } from './dto/find-users-query.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
@@ -25,11 +25,11 @@ export class UsersController {
 
   @Get(':id')
   async findUserById(@Param('id') id): Promise<ReturnUserDto> {
-    const user = await this.usersService.findUserById(id)
+    const user = await this.usersService.findUserById(id);
     return {
       user,
       message: 'Usuário encontrado',
-    }
+    };
   }
 
   @Patch(':id')
@@ -41,9 +41,9 @@ export class UsersController {
     if (user.id !== id) {
       throw new ForbiddenException(
         'Você não tem autorização para acessar esse recurso',
-      )
+      );
     }
-    return this.usersService.updateUser(updateUserDto, id)
+    return this.usersService.updateUser(updateUserDto, id);
   }
 
   @Delete(':id')
@@ -51,20 +51,20 @@ export class UsersController {
     if (user.id !== id) {
       throw new ForbiddenException(
         'Você não tem autorização para acessar esse recurso',
-      )
+      );
     }
-    await this.usersService.deleteUser(id)
+    await this.usersService.deleteUser(id);
     return {
       message: 'Usuário deletado com sucesso',
-    }
+    };
   }
 
   @Get()
   async findUsers(@Query() queryDto: FindUsersQueryDto) {
-    const users = await this.usersService.findUsers(queryDto)
+    const users = await this.usersService.findUsers(queryDto);
     return {
       users,
       message: 'Usuários encontrados',
-    }
+    };
   }
 }

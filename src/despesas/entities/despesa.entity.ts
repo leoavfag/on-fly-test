@@ -1,26 +1,26 @@
-import { User } from '../../users/entities/users.entity'
+import { User } from '../../users/entities/users.entity';
 import {
   BaseEntity,
   Column,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-} from 'typeorm'
+} from 'typeorm';
 
 @Entity()
 export class Despesa extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  id: string;
 
   @Column({ nullable: false, type: 'varchar', length: 191 })
-  descricao: string
+  descricao: string;
 
   @Column({ nullable: false, type: 'date' })
-  date: Date
+  date: Date;
 
   @ManyToOne(() => User, (user) => user.despesas)
-  user: User
+  user: User;
 
   @Column({ nullable: false, type: 'decimal' })
-  valor: number
+  valor: number;
 }

@@ -7,42 +7,42 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-} from 'typeorm'
+} from 'typeorm';
 
-import * as bcrypt from 'bcryptjs'
-import { Exclude } from 'class-transformer'
-import { Despesa } from '../../despesas/entities/despesa.entity'
+import * as bcrypt from 'bcryptjs';
+import { Exclude } from 'class-transformer';
+import { Despesa } from '../../despesas/entities/despesa.entity';
 
 @Entity()
 @Unique(['email'])
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  id: string;
 
   @Column({ nullable: false, type: 'varchar', length: 200 })
-  email: string
+  email: string;
 
   @Column({ nullable: false, type: 'varchar', length: 200 })
-  name: string
+  name: string;
 
   @Exclude()
   @Column({ nullable: false, type: 'varchar' })
-  password: string
+  password: string;
 
   @Column({ nullable: false })
-  salt: string
+  salt: string;
 
   @CreateDateColumn()
-  createdAt: Date
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updateAt: Date
+  updateAt: Date;
 
   @OneToMany(() => Despesa, (despesa) => despesa.user)
-  despesas: Despesa[]
+  despesas: Despesa[];
 
   async checkPassword(password: string): Promise<boolean> {
-    const hash = await bcrypt.hash(password, this.salt)
-    return hash === this.password
+    const hash = await bcrypt.hash(password, this.salt);
+    return hash === this.password;
   }
 }

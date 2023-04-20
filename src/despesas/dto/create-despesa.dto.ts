@@ -1,5 +1,5 @@
-import { Transform } from 'class-transformer'
-import { IsDate, IsNotEmpty, MaxDate, MaxLength, Min } from 'class-validator'
+import { Transform } from 'class-transformer';
+import { IsDate, IsNotEmpty, MaxDate, MaxLength, Min } from 'class-validator';
 
 export class CreateDespesaDto {
   @IsNotEmpty({
@@ -8,7 +8,7 @@ export class CreateDespesaDto {
   @MaxLength(191, {
     message: 'O endereço de email deve ter menos de 200 caracteres',
   })
-  descricao: string
+  descricao: string;
 
   @IsNotEmpty({
     message: 'Informe a data da despesa',
@@ -18,11 +18,11 @@ export class CreateDespesaDto {
     message: 'A data da despesa deve ser menor ou igual a data atual',
   })
   @Transform(({ value }) => new Date(value))
-  date: Date
+  date: Date;
 
   @IsNotEmpty({
     message: 'Informe o valor da despesa',
   })
   @Min(0)
-  valor: number
+  valor: number;
 }
