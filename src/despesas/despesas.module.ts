@@ -4,8 +4,8 @@ import { DespesasController } from './despesas.controller'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Despesa } from './entities/despesa.entity'
 import { PassportModule } from '@nestjs/passport'
-import { User } from 'src/users/entities/users.entity'
-import { UsersModule } from 'src/users/users.module'
+import { User } from '../users/entities/users.entity'
+import { UsersModule } from '../users/users.module'
 
 @Module({
   imports: [

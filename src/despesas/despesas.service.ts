@@ -9,9 +9,9 @@ import { UpdateDespesaDto } from './dto/update-despesa.dto'
 import { Despesa } from './entities/despesa.entity'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
-import { User } from 'src/users/entities/users.entity'
-import { UsersService } from 'src/users/users.service'
-import { BaseQueryParametersDto } from 'src/shared/base-query-parameters.dto'
+import { User } from '../users/entities/users.entity'
+import { UsersService } from '../users/users.service'
+import { BaseQueryParametersDto } from '../shared/base-query-parameters.dto'
 
 @Injectable()
 export class DespesasService {

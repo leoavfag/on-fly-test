@@ -11,7 +11,7 @@ import {
 
 import * as bcrypt from 'bcryptjs'
 import { Exclude } from 'class-transformer'
-import { Despesa } from 'src/despesas/entities/despesa.entity'
+import { Despesa } from '../../despesas/entities/despesa.entity'
 
 @Entity()
 @Unique(['email'])
