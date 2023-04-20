@@ -37,9 +37,10 @@ export class UsersService {
       query.andWhere('user.email ILIKE :email', { email: `%${email}%` })
 
     query.skip((queryDto.page - 1) * queryDto.limit)
-    query.take(+queryDto.limit)
+    query.take(queryDto.limit)
     query.orderBy(queryDto.sort ? JSON.parse(queryDto.sort) : undefined)
     query.select(['user.name', 'user.email', 'user.id'])
+
     const [users, total] = await query.getManyAndCount()
 
     return { users, total }
@@ -63,7 +64,8 @@ export class UsersService {
       delete user.salt
       return user
     } catch (error) {
-      if (error.code.toString() === '23505') {
+      const conflictErrorCode = '23505'
+      if (error.code.toString() === conflictErrorCode) {
         throw new ConflictException('Endereço de email já está em uso')
       }
       throw new InternalServerErrorException(
@@ -75,7 +77,7 @@ export class UsersService {
   async findUserById(userId: string): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      select: ['email', 'name', 'id'],
+      select: ['email', 'name', 'id', 'despesas'],
     })
 
     if (!user) throw new NotFoundException('Usuário não encontrado')

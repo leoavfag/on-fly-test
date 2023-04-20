@@ -4,10 +4,12 @@ import { User } from './entities/users.entity'
 import { UsersService } from './users.service'
 import { UsersController } from './users.controller'
 import { PassportModule } from '@nestjs/passport'
+import { Despesa } from 'src/despesas/entities/despesa.entity'
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([Despesa]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   exports: [UsersService],

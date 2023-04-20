@@ -1,10 +1,5 @@
-import {
-  IsCurrency,
-  IsDate,
-  IsNotEmpty,
-  MaxDate,
-  MaxLength,
-} from 'class-validator'
+import { Transform } from 'class-transformer'
+import { IsDate, IsNotEmpty, MaxDate, MaxLength, Min } from 'class-validator'
 
 export class CreateDespesaDto {
   @IsNotEmpty({
@@ -22,22 +17,12 @@ export class CreateDespesaDto {
   @MaxDate(new Date(), {
     message: 'A data da despesa deve ser menor ou igual a data atual',
   })
+  @Transform(({ value }) => new Date(value))
   date: Date
 
   @IsNotEmpty({
     message: 'Informe o valor da despesa',
   })
-  @IsCurrency({
-    allow_negatives: false,
-    parens_for_negatives: false,
-    negative_sign_before_digits: false,
-    negative_sign_after_digits: false,
-    allow_negative_sign_placeholder: false,
-    thousands_separator: '.',
-    decimal_separator: ',',
-    allow_decimal: true,
-    require_decimal: true,
-    digits_after_decimal: [2],
-  })
+  @Min(0)
   valor: number
 }
